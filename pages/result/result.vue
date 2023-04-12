@@ -1,63 +1,62 @@
 <template>
 	<view class="container" ref="container" :style="{ height: height + 'px' }">
-		<van-empty v-if="result.length === 0" class="custom-image" image="../../../../static/images/empty.png" description="无咩无个" />
+		<van-empty v-if="total === 0" class="custom-image" image="../../../../static/images/empty.png" description="无咩无个" />
 		<view class="main" v-else>
 			<scroll-view scroll-y="true" class="scroll">
-				<block v-for="(item, index) in result" :key="index">
-					<van-swipe-cell :right-width="75">
-						<view class="card-wrap">
-							<view class="card-main">
-								<image :src="require(`../../static/images/${item.type}.jpeg`)" mode=""></image>
-								<view class="card-desc">
-									<view class="card-title">{{ item.title }}</view>
-									<view class="card-other">
-										<text>出结果时间：</text>
-										<text>{{ item.time || '-' }}</text>
-									</view>
-									<view class="card-other">
-										<text>退款说明：</text>
-										<text>{{ item.remark || '-' }}</text>
-									</view>
-								</view>
-							</view>
-							<view class="card-footer">
-								<text>费用：</text>
-								<text class="card-footer-price">{{ item.price }}元</text>
-							</view>
-						</view>
-						<view slot="right" class="deleteBtn"><van-button type="danger" round @click="del(item.id)">删除</van-button></view>
-					</van-swipe-cell>
-				</block>
+				<item-card ref="invent" :data="inventData" @changed="changeCount" @delete="del"></item-card>
+				<item-card ref="utility" :data="utilityData" @changed="changeCount" @delete="del"></item-card>
+				<item-card ref="apperance" :data="apperanceData" @changed="changeCount" @delete="del"></item-card>
 			</scroll-view>
 			<view class="options">
-				<van-button type="danger" icon="delete" round @click="showDialog"></van-button>
-				<van-dialog :show="show" title="确认要删除所有选择吗" show-cancel-button @confirm="delAll" @close="close" />
+				<van-button type="danger" icon="delete" round @click="trigger"></van-button>
+				<van-dialog :show="show" :z-inde="99999" title="确认要删除所有选择吗" show-cancel-button @confirm="delAll" @close="trigger" />
 				<van-toast id="van-toast" />
 			</view>
-			<view class="footer">总价：{{ price }}元</view>
+			<view class="footer">
+				<text>最大可退金额：{{ refund }}元</text>
+				<text>总价：{{ price }}元</text>
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
 import getResult from '../../utils/getResult.js'
+import itemCard from '../../wxcomponents/itemCard/itemCard.vue'
 export default {
 	data() {
 		return {
 			height: 0,
-			result: [],
+			result: {},
 			deleted: [],
-			show: false
+			changed: [],
+			show: false,
+			inventData: {},
+			utilityData: {},
+			apperanceData: {}
 		}
 	},
 	computed: {
 		price() {
+			// console.log(this.result, 'computed price')
 			let sum = 0
-			if (this.result.length > 0) {
-				this.result.forEach((item) => {
-					sum += item.price
-				})
-			}
+			Object.values(this.result).forEach((item) => {
+				sum += item.price * item.count
+			})
+			return sum
+		},
+		refund() {
+			let sum = 0
+			Object.values(this.result).forEach((item) => {
+				sum += item.refund * item.count
+			})
+			return sum
+		},
+		total() {
+			let sum = 0
+			Object.values(this.result).forEach((item) => {
+				sum += item.count
+			})
 			return sum
 		}
 	},
@@ -68,44 +67,76 @@ export default {
 		if (options.result) {
 			const data = JSON.parse(options.result)
 			this.result = getResult(data)
-			// console.log(this.result, 'onload');
+			// console.log(this.result, 'onload')
+			this.classify(this.result)
 		}
 	},
 	onUnload() {
-		// console.log('unload');
+		console.log('unload')
 	},
 	onShow() {
-		// for test
-		const string =
-			'[{"type":"invent","selected":"ACF","price":5000,"id":1680690360788},{"type":"utility","selected":"M","price":3200,"id":1680690361953},{"type":"apperance","selected":"Q","price":2000,"id":1680690363271},{"type":"invent","selected":"ACF","price":5000,"id":1680690364497},{"type":"utility","selected":"M","price":3200,"id":1680690366050},{"type":"apperance","selected":"Q","price":2000,"id":1680690367120},{"type":"invent","selected":"ACF","price":5000,"id":1680690368526},{"type":"utility","selected":"M","price":3200,"id":1680690369807},{"type":"apperance","selected":"Q","price":2000,"id":1680690370929}]'
-		const data = JSON.parse(string)
-		// this.result = getResult(data);
+		// console.log('show')
+		// const string2 = '{"Q":{"type":"apperance","price":2000,"count":1}}'
+		// // '{"ACF":{"type":"invent","price":5000,"count":2},"ADF":{"type":"invent","price":5500,"count":1},"ACEG":{"type":"invent","price":22560,"count":1},"M":{"type":"utility","price":3200,"count":1},"Q":{"type":"apperance","price":2000,"count":1}}'
+		// this.result = getResult(JSON.parse(string2))
+		// console.log(this.result, 'show')
+		// this.classify(this.result)
+	},
+	onHide() {
+		console.log('hide')
 	},
 	mounted() {},
 	methods: {
-		del(id) {
-			const index = this.result.findIndex((item) => item.id === id)
-			if (index !== -1) {
-				this.deleted.push(id)
-				this.result.splice(index, 1)
+		classify(data) {
+			// 分类
+			Object.keys(data).forEach((key) => {
+				const type = data[key].type
+				this[`${type}Data`][key] = data[key]
+			})
+			// console.log(this.inventData, this.utilityData, this.apperanceData, 'classify')
+		},
+		del(key, type) {
+			if (this.result[key]) {
+				this.$delete(this[`${type}Data`], key)
+				this.$delete(this.result, key)
+				this.deleted.push(key)
 				uni.setStorageSync('deleted', this.deleted)
-				// console.log(this.result, 'res');
+				uni.showToast({
+					icon: 'none',
+					title: '删除成功',
+					duration: 800
+				})
 			}
 		},
-		showDialog() {
-			this.show = true
-		},
-		close() {
-			this.show = false
+		trigger() {
+			this.show = !this.show
 		},
 		delAll() {
-			this.result.forEach((item) => {
-				this.deleted.push(item.id)
+			Object.keys(this.result).forEach((key) => {
+				this.deleted.push(key)
 			})
 			uni.setStorageSync('deleted', this.deleted)
-			this.result = []
-			// Toast.success('删除成功');
+			this.result = {}
+			uni.showToast({
+				icon: 'none',
+				title: '删除成功',
+				duration: 800
+			})
+		},
+		changeCount(params) {
+			// console.log(params, 'emit')
+			const { selected, count } = params
+			if (this.result[selected]) {
+				this.changed.push(params)
+				this.result[selected].count = count
+				// console.log(this.result, 'changeCount')
+				// console.log(this.inventData, 'inventData')
+				uni.setStorageSync('changed', this.changed)
+			}
 		}
+	},
+	components: {
+		itemCard
 	}
 }
 </script>
@@ -162,9 +193,11 @@ view {
 			}
 		}
 		.card-footer {
+			display: flex;
+			justify-content: space-between;
 			padding-top: 10px;
 			padding-right: 20px;
-			text-align: right;
+			// text-align: right;
 			.card-footer-price {
 				font-weight: bold;
 				font-size: 18px;
@@ -186,16 +219,23 @@ view {
 	.footer {
 		position: fixed;
 		bottom: 25px;
+		display: flex;
+		justify-content: space-evenly;
+		align-items: center;
 		height: 50px;
-		line-height: 50px;
-		width: 80%;
-		text-align: right;
-		padding: 0 20px;
+		width: 85%;
+		padding: 0 15px;
 		background-color: rgb(25, 25, 25);
 		border-radius: 30px;
 		color: aliceblue;
 		left: 50%;
 		transform: translate(-50%, 5px);
+		text {
+			&:first-child {
+				font-size: 12px;
+				color: #999;
+			}
+		}
 	}
 }
 </style>

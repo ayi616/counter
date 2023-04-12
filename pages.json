@@ -7,7 +7,9 @@
 				"enablePullDownRefresh": false,
 				"usingComponents": {
 					"pop": "/wxcomponents/pop/pop",
-					"pickArea": "/wxcomponents/pickArea/pickArea"
+					"pickArea": "/wxcomponents/pickArea/pickArea",
+					"itemCard": "/wxcomponents/itemCard/itemCard",
+					"overview": "/wxcomponents/overview/overview"
 				}
 			}
 		}, {
@@ -46,7 +48,13 @@
 			// 空状态
 			"van-empty": "wxcomponents/@vant/weapp/empty/index",
 			// 轻提示
-			"van-toast": "wxcomponents/@vant/weapp/toast/index"
+			"van-toast": "wxcomponents/@vant/weapp/toast/index",
+			// 步进器
+			"van-stepper": "wxcomponents/@vant/weapp/stepper/index",
+			// 标签
+			"van-tag": "wxcomponents/@vant/weapp/tag/index",
+			// 图标
+			"van-icon": "wxcomponents/@vant/weapp/icon/index"
 		}
 	},
 	"uniIdRouter": {}

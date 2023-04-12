@@ -17,31 +17,35 @@
 		<!-- 弹窗 -->
 		<view>
 			<!-- 发明 -->
-			<block v-if="inventShow"><pop ref="invent" :source="source" title="发明" @confirm="confirm" @close="closePop"></pop></block>
+			<block v-if="inventShow"><pop ref="invent" :source="source" title="发明" @confirm="confirm2" @close="closePop"></pop></block>
 
 			<!-- 实用新型 -->
-			<block v-if="utilityShow"><pop ref="utility" :source="source" title="实用新型" @confirm="confirm" @close="closePop"></pop></block>
+			<block v-if="utilityShow"><pop ref="utility" :source="source" title="实用新型" @confirm="confirm2" @close="closePop"></pop></block>
 
 			<!-- 外观设计 -->
-			<block v-if="apperanceShow"><pop ref="apperance" :source="source" title="外观设计" @confirm="confirm" @close="closePop"></pop></block>
+			<block v-if="apperanceShow"><pop ref="apperance" :source="source" title="外观设计" @confirm="confirm2" @close="closePop"></pop></block>
 		</view>
-
 		<footer>
 			<van-goods-action>
-				<van-goods-action-icon icon="balance-list-o" text="概览" @click="overview" :info="total" />
+				<van-goods-action-icon icon="balance-list-o" text="概览" @click="openOverview" :info="total" />
 				<van-goods-action-button text="查看详情" @click="toResult" />
 			</van-goods-action>
 		</footer>
-		<van-popup :show="visible" closeable position="bottom" custom-style="height: 30%" @close="closeOverview" />
+		<van-popup :show="visible" closeable position="bottom" custom-style="max-height: 40%" @close="closeOverview">
+			<overview :data="rawData" :total="total" @changed="changeCount" @deleted="deleted"></overview>
+		</van-popup>
+		<van-toast id="van-toast" />
 	</view>
 </template>
 
 <script>
+import Toast from '../../wxcomponents/@vant/weapp/toast/toast'
 import Pop from '../../wxcomponents/pop/pop.vue'
 import PickArea from '../../wxcomponents/pickArea/pickArea.vue'
+import Overview from '../../wxcomponents/overview/overview.vue'
 import _ from 'lodash'
 export default {
-	// onShareAppMessage() {},
+	onShareAppMessage() {},
 	onLoad() {
 		console.log('load')
 	},
@@ -49,27 +53,23 @@ export default {
 		console.log('unload')
 	},
 	onShow() {
-		const deleted = uni.getStorageSync('deleted')
-		// console.log(deleted, 'deleted');
-		const len = deleted.length
-		if (len > 0) {
-			deleted.forEach((id, idx) => {
-				const index = this.result.findIndex((item) => item.id === id)
-				if (index !== -1) {
-					this.result.splice(index, 1)
-				}
-			})
-			// deleted = [];
-			// uni.setStorageSync('deleted', deleted);
-			uni.removeStorageSync('deleted')
-		}
+		this.handleDelete()
+		this.handleChange()
 	},
 	onHide() {
 		console.log('hide')
 	},
 	computed: {
 		total() {
-			return this.result.length
+			// return this.result.length
+			let count = 0
+			if (this.rawData) {
+				Object.values(this.rawData).forEach((val) => {
+					count += val.count
+				})
+				// console.log(count, 'computed')
+			}
+			return count
 		}
 	},
 	data() {
@@ -85,6 +85,7 @@ export default {
 				utility: [],
 				apperance: []
 			},
+			rawData: {},
 			visible: false
 		}
 	},
@@ -103,12 +104,34 @@ export default {
 			const res = {
 				type: e.target.dataset.ref,
 				selected: e.detail.__args__[0],
-				price: e.detail.__args__[1],
-				id: new Date().getTime() // 用于删除时找到对应元素
+				price: e.detail.__args__[1]
+				// id: new Date().getTime() // 用于删除时找到对应元素
 			}
 			this.result.push(res)
 			console.log(this.result, 'confirm')
-			// uni.setStorageSync('result', this.result);
+			// const selected = e.detail.__args__[0]
+		},
+		confirm2(e) {
+			// console.log(e, 'c2')
+			const { selected, price, type } = e.detail.__args__[0]
+			if (this.rawData[selected]) {
+				// this.rawData[selected].count += 1
+				const count = this.rawData[selected].count
+				this.$set(this.rawData[selected], 'count', count + 1)
+			} else {
+				const item = {
+					type,
+					price,
+					count: 1
+				}
+				// this.rawData[selected] = item
+				this.$set(this.rawData, selected, item)
+			}
+			Toast({
+				type: 'success',
+				duration: 800
+			})
+			// console.log(this.rawData, 'confirm')
 		},
 		closePop() {
 			this[`${this.source}Show`] = false
@@ -117,22 +140,54 @@ export default {
 		changeSidebar(e) {
 			console.log(e)
 		},
-		overview() {
-			this.visible = true
+		toResult() {
+			console.log(JSON.stringify(this.rawData), 'json')
+			uni.navigateTo({
+				url: `/pages/result/result?result=${JSON.stringify(this.rawData)}`
+			})
+		},
+		handleDelete() {
+			const deleted = uni.getStorageSync('deleted')
+			// console.log(deleted, 'deleted')
+			if (deleted.length > 0) {
+				deleted.forEach((key) => {
+					if (this.rawData[key]) {
+						this.$delete(this.rawData, key)
+					}
+				})
+				uni.removeStorageSync('deleted')
+			}
+		},
+		handleChange() {
+			const changed = uni.getStorageSync('changed')
+			if (changed.length > 0) {
+				changed.forEach((item) => {
+					this.rawData[item.selected].count = item.count
+				})
+				uni.removeStorageSync('changed')
+			}
 		},
 		closeOverview() {
 			this.visible = false
 		},
-		toResult() {
-			console.log(JSON.stringify(this.result), 'json')
-			uni.navigateTo({
-				url: `/pages/result/result?result=${JSON.stringify(this.result)}`
-			})
+		openOverview() {
+			this.visible = true
+		},
+		// overview delete
+		deleted(e) {
+			const selected = e.detail.__args__[0]
+			this.$delete(this.rawData, selected)
+		},
+		// overview change
+		changeCount(e) {
+			const { selected, count } = e.detail.__args__[0]
+			this.rawData[selected].count = count
 		}
 	},
 	components: {
 		Pop,
-		PickArea
+		PickArea,
+		Overview
 	}
 }
 </script>

@@ -26,7 +26,6 @@
 
 <script>
 import clonedeep from 'lodash/cloneDeep'
-import { ssrContextKey } from 'vue'
 import getOptions from '../../utils/getOptions.js'
 import getResult from '../../utils/getResult.js'
 export default {
@@ -103,7 +102,13 @@ export default {
 		},
 		confirm() {
 			// console.log('pop confirm')
-			this.$emit('confirm', this.selected, this.sum)
+			const params = {
+				selected: this.selected,
+				price: this.sum,
+				type: this.source
+			}
+			// this.$emit('confirm', this.selected, this.sum)
+			this.$emit('confirm', params)
 		},
 		close() {
 			// 关闭弹窗时恢复初始数据
