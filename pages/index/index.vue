@@ -17,13 +17,13 @@
 		<!-- 弹窗 -->
 		<view>
 			<!-- 发明 -->
-			<block v-if="inventShow"><pop ref="invent" :source="source" title="发明" @confirm="confirm2" @close="closePop"></pop></block>
+			<block v-if="inventShow"><pop ref="invent" :source="source" title="发明" @confirm="confirm" @close="closePop"></pop></block>
 
 			<!-- 实用新型 -->
-			<block v-if="utilityShow"><pop ref="utility" :source="source" title="实用新型" @confirm="confirm2" @close="closePop"></pop></block>
+			<block v-if="utilityShow"><pop ref="utility" :source="source" title="实用新型" @confirm="confirm" @close="closePop"></pop></block>
 
 			<!-- 外观设计 -->
-			<block v-if="apperanceShow"><pop ref="apperance" :source="source" title="外观设计" @confirm="confirm2" @close="closePop"></pop></block>
+			<block v-if="apperanceShow"><pop ref="apperance" :source="source" title="外观设计" @confirm="confirm" @close="closePop"></pop></block>
 		</view>
 		<footer>
 			<van-goods-action>
@@ -43,21 +43,21 @@ import Toast from '../../wxcomponents/@vant/weapp/toast/toast'
 import Pop from '../../wxcomponents/pop/pop.vue'
 import PickArea from '../../wxcomponents/pickArea/pickArea.vue'
 import Overview from '../../wxcomponents/overview/overview.vue'
-import _ from 'lodash'
+import clonedeep from 'lodash/cloneDeep'
 export default {
 	onShareAppMessage() {},
 	onLoad() {
-		console.log('load')
+		// console.log('load index')
 	},
 	onUnload() {
-		console.log('unload')
+		// console.log('unload index')
 	},
 	onShow() {
 		this.handleDelete()
 		this.handleChange()
 	},
 	onHide() {
-		console.log('hide')
+		// console.log('hide index')
 	},
 	computed: {
 		total() {
@@ -100,22 +100,9 @@ export default {
 			// console.log(this[`${type}Show`], 'pop')
 		},
 		confirm(e) {
-			// console.log(e, 'e');
-			const res = {
-				type: e.target.dataset.ref,
-				selected: e.detail.__args__[0],
-				price: e.detail.__args__[1]
-				// id: new Date().getTime() // 用于删除时找到对应元素
-			}
-			this.result.push(res)
-			console.log(this.result, 'confirm')
-			// const selected = e.detail.__args__[0]
-		},
-		confirm2(e) {
 			// console.log(e, 'c2')
 			const { selected, price, type } = e.detail.__args__[0]
 			if (this.rawData[selected]) {
-				// this.rawData[selected].count += 1
 				const count = this.rawData[selected].count
 				this.$set(this.rawData[selected], 'count', count + 1)
 			} else {
@@ -124,24 +111,23 @@ export default {
 					price,
 					count: 1
 				}
-				// this.rawData[selected] = item
 				this.$set(this.rawData, selected, item)
 			}
 			Toast({
 				type: 'success',
 				duration: 800
 			})
-			// console.log(this.rawData, 'confirm')
+			console.log(this.rawData, 'confirm')
 		},
 		closePop() {
 			this[`${this.source}Show`] = false
 			// console.log(this[`${this.source}Show`], 'popClose')
 		},
 		changeSidebar(e) {
-			console.log(e)
+			// console.log(e)
 		},
 		toResult() {
-			console.log(JSON.stringify(this.rawData), 'json')
+			// console.log(JSON.stringify(this.rawData), 'json')
 			uni.navigateTo({
 				url: `/pages/result/result?result=${JSON.stringify(this.rawData)}`
 			})

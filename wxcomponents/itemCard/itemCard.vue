@@ -15,6 +15,10 @@
 								<text>退款说明：</text>
 								<text>{{ item.remark || '-' }}</text>
 							</view>
+							<view style="display:flex" v-if="item.desc || item.tag">
+								<van-tag type="success" style="margin-right: 8px;">{{ item.desc }}</van-tag>
+								<van-tag color="#1f586b">{{ item.tag }}</van-tag>
+							</view>
 						</view>
 					</view>
 					<view class="card-footer">
@@ -42,7 +46,7 @@ export default {
 		}
 	},
 	mounted() {
-		console.log(this.data, 'card')
+		// console.log(this.data, 'card')
 	},
 	data() {
 		return {}
@@ -62,4 +66,58 @@ export default {
 }
 </script>
 
-<style lang="less"></style>
+<style lang="less">
+.card-wrap {
+	// height: 144px;
+	padding: 10px;
+	margin-bottom: 16px;
+	// border: 1px solid #eee;
+	border-radius: 10px;
+	background-color: #eee;
+	image {
+		width: 100px;
+		height: 100px;
+		border-radius: 10px;
+	}
+	.card-main {
+		display: flex;
+		align-items: center;
+		border-bottom: 1px solid #666;
+		padding-bottom: 4px;
+		.card-desc {
+			margin-left: 10px;
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			view {
+				margin-bottom: 8px;
+			}
+			.card-title {
+				font-weight: bold;
+				font-size: 17px;
+			}
+			.card-other {
+				font-size: 14px;
+				color: #999;
+			}
+		}
+	}
+	.card-footer {
+		display: flex;
+		justify-content: space-between;
+		padding-top: 8px;
+		padding-right: 16px;
+		// text-align: right;
+		.card-footer-price {
+			font-weight: bold;
+			font-size: 18px;
+		}
+	}
+}
+.deleteBtn {
+	display: flex;
+	align-items: center;
+	height: 100%;
+	margin-left: 10px;
+}
+</style>

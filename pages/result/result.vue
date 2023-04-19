@@ -67,12 +67,12 @@ export default {
 		if (options.result) {
 			const data = JSON.parse(options.result)
 			this.result = getResult(data)
-			// console.log(this.result, 'onload')
+			console.log(this.result, 'onload')
 			this.classify(this.result)
 		}
 	},
 	onUnload() {
-		console.log('unload')
+		// console.log('unload result')
 	},
 	onShow() {
 		// console.log('show')
@@ -83,7 +83,7 @@ export default {
 		// this.classify(this.result)
 	},
 	onHide() {
-		console.log('hide')
+		// console.log('hide result')
 	},
 	mounted() {},
 	methods: {
@@ -156,59 +156,6 @@ view {
 		.scroll {
 			padding-bottom: 60px;
 		}
-	}
-	.card-wrap {
-		// height: 144px;
-		padding: 10px;
-		margin-bottom: 16px;
-		// border: 1px solid #eee;
-		border-radius: 10px;
-		background-color: #eee;
-		image {
-			width: 100px;
-			height: 100px;
-			border-radius: 10px;
-		}
-		.card-main {
-			display: flex;
-			align-items: center;
-			border-bottom: 1px solid #666;
-			padding-bottom: 10px;
-			.card-desc {
-				margin-left: 10px;
-				display: flex;
-				flex-direction: column;
-				flex: 1;
-				view {
-					margin-bottom: 8px;
-				}
-				.card-title {
-					font-weight: bold;
-					font-size: 17px;
-				}
-				.card-other {
-					font-size: 14px;
-					color: #999;
-				}
-			}
-		}
-		.card-footer {
-			display: flex;
-			justify-content: space-between;
-			padding-top: 10px;
-			padding-right: 20px;
-			// text-align: right;
-			.card-footer-price {
-				font-weight: bold;
-				font-size: 18px;
-			}
-		}
-	}
-	.deleteBtn {
-		display: flex;
-		align-items: center;
-		height: 100%;
-		margin-left: 10px;
 	}
 	.options {
 		position: fixed;
