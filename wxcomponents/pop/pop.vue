@@ -8,7 +8,7 @@
 						<van-radio-group :direction="item.dir" :value="item.choice" @change="changeRadio" :data-key="ques">
 							<van-radio v-for="(opt, key) in item.options" :key="key" :name="key" :class="[item.dir === 'vertical' ? 'vertical-margin' : '']">
 								<text>{{ opt.title }}</text>
-								<text style="font-size: 12px;">{{ opt.detail }}</text>
+								<text style="font-size: 7px;">{{ opt.detail }}</text>
 							</van-radio>
 						</van-radio-group>
 					</view>

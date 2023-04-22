@@ -22,14 +22,14 @@ const quoteMap = {
 	quote4: {
 		title: '保护中心发明',
 		desc: '电学、大数据',
-		time: '8个月',
+		time: '备案后8个月',
 		refund: 28000,
 		remark: '不授权，退28000，或重新申请'
 	},
 	quote5: {
 		title: '保护中心发明',
 		desc: '其他',
-		time: '8个月',
+		time: '备案后8个月',
 		refund: 25000,
 		remark: '不授权，退25000，或重新申请'
 	},

@@ -33,7 +33,7 @@ export default {
 				{
 					type: 'apperance',
 					img: '../../static/images/apperance.jpeg',
-					price: 1000
+					price: 850
 				}
 			]
 		}
