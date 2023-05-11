@@ -36,18 +36,21 @@ const quoteMap = {
 	// 实用新型
 	quote6: {
 		title: '实用新型（没费减）',
+		desc: '编写包授权',
 		time: '5～8个月',
 		refund: 0,
 		remark: ''
 	},
 	quote7: {
 		title: '实用新型',
+		desc: '编写包授权',
 		time: '5～8个月',
 		refund: 0,
 		remark: ''
 	},
 	quote8: {
 		title: '实用新型',
+		desc: '编写包授权',
 		time: '5～8个月',
 		refund: 0,
 		remark: ''

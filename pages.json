@@ -18,9 +18,25 @@
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
 			}
-
+		}, {
+			"path": "pages/rate/rate",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
 		}
 	],
+	// "tabBar": {
+	// 	"list": [{
+	// 			"pagePath": "pages/index/index",
+	// 			"text": "专利"
+	// 		},
+	// 		{
+	// 			"pagePath": "pages/rate/rate",
+	// 			"text": "评分"
+	// 		},
+	// 	]
+	// },
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "工程计价",
