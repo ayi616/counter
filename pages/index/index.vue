@@ -3,15 +3,38 @@
 		<header class="header">
 			<!-- 左侧导航栏 -->
 			<view class="nav">
-				<van-sidebar :active-key="activeKey" @change="changeSidebar">
+				<van-sidebar v-model="activeKey" @change="changeSidebar">
 					<van-sidebar-item title="专利" />
-					<van-sidebar-item title="标签名" disabled />
-					<van-sidebar-item title="标签名" disabled />
+					<van-sidebar-item>
+						<template slot="title">
+							<view>
+								<view style="text-align: left;">广东</view>
+								<view style="font-size: 12px;text-align: left;">保护中心</view>
+							</view>
+						</template>
+					</van-sidebar-item>
+
+					<van-sidebar-item>
+						<template slot="title">
+							<view style="text-align: left;">汕头</view>
+							<view style="font-size: 12px;text-align: left;">保护中心</view>
+						</template>
+					</van-sidebar-item>
+
+					<van-sidebar-item>
+						<template slot="title">
+							<view style="text-align: left;">广州</view>
+							<view style="font-size: 12px;text-align: left;">保护中心</view>
+						</template>
+					</van-sidebar-item>
 				</van-sidebar>
 			</view>
 			<!-- 右侧内容区域 -->
 
-			<pick-area @pop="pop" style="flex: 1; height: 100%;"></pick-area>
+			<pick-area v-show="activeKey === 0" @pop="pop" style="flex: 1; height: 100%;"></pick-area>
+			<search v-show="activeKey === 1" :source="1" style="flex: 1"></search>
+			<search v-show="activeKey === 2" :source="2" style="flex: 1"></search>
+			<search v-show="activeKey === 3" :source="3" style="flex: 1"></search>
 		</header>
 
 		<!-- 弹窗 -->
@@ -43,6 +66,7 @@ import Toast from '../../wxcomponents/@vant/weapp/toast/toast'
 import Pop from '../../wxcomponents/pop/pop.vue'
 import PickArea from '../../wxcomponents/pickArea/pickArea.vue'
 import Overview from '../../wxcomponents/overview/overview.vue'
+import Search from '../../wxcomponents/search/search.vue'
 import clonedeep from 'lodash/cloneDeep'
 export default {
 	onShareAppMessage() {},
@@ -117,14 +141,20 @@ export default {
 				type: 'success',
 				duration: 800
 			})
-			console.log(this.rawData, 'confirm')
+			// console.log(this.rawData, 'confirm')
 		},
 		closePop() {
 			this[`${this.source}Show`] = false
 			// console.log(this[`${this.source}Show`], 'popClose')
 		},
+		clickitem(path) {
+			uni.navigateTo({
+				url: `/pages/${path}/${path}`
+			})
+		},
 		changeSidebar(e) {
-			// console.log(e)
+			// console.log(e, 'eee')
+			this.activeKey = e.detail
 		},
 		toResult() {
 			// console.log(JSON.stringify(this.rawData), 'json')
@@ -173,7 +203,8 @@ export default {
 	components: {
 		Pop,
 		PickArea,
-		Overview
+		Overview,
+		Search
 	}
 }
 </script>

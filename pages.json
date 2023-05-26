@@ -9,17 +9,12 @@
 					"pop": "/wxcomponents/pop/pop",
 					"pickArea": "/wxcomponents/pickArea/pickArea",
 					"itemCard": "/wxcomponents/itemCard/itemCard",
-					"overview": "/wxcomponents/overview/overview"
+					"overview": "/wxcomponents/overview/overview",
+					"search": "/wxcomponents/search/search"
 				}
 			}
 		}, {
 			"path": "pages/result/result",
-			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
-			}
-		}, {
-			"path": "pages/rate/rate",
 			"style": {
 				"navigationBarTitleText": "",
 				"enablePullDownRefresh": false
@@ -70,7 +65,17 @@
 			// 标签
 			"van-tag": "wxcomponents/@vant/weapp/tag/index",
 			// 图标
-			"van-icon": "wxcomponents/@vant/weapp/icon/index"
+			"van-icon": "wxcomponents/@vant/weapp/icon/index",
+			// 下拉菜单
+			"van-dropdown-menu": "wxcomponents/@vant/weapp/dropdown-menu/index",
+			"van-dropdown-item": "wxcomponents/@vant/weapp/dropdown-item/index",
+			// 动作面板
+			"van-action-sheet": "wxcomponents/@vant/weapp/action-sheet/index",
+			//  单元格
+			"van-cell": "wxcomponents/@vant/weapp/cell/index",
+			"van-cell-group": "wxcomponents/@vant/weapp/cell-group/index",
+			// 文本框
+			"van-field": "wxcomponents/@vant/weapp/field/index"
 		}
 	},
 	"uniIdRouter": {}
