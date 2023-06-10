@@ -5,7 +5,7 @@
 		<view class="">搜索范围：</view>
 		<van-radio-group v-model="radio" @change="changeRadio">
 			<van-cell-group>
-				<van-cell :title="item" clickable v-for="(item, index) in keyList" :key="index" @click="cellClick(item)">
+				<van-cell :title="item" clickable v-for="(item, index) in keyList" :key="index" @click="cellClick(item)" v-if="">
 					<template #right-icon>
 						<van-radio :name="item" />
 					</template>
@@ -38,11 +38,17 @@
 import dataGZ from '../../data/dataGZ.json'
 import dataGD from '../../data/dataGD.json'
 import dataST from '../../data/dataST.json'
+import dataSZ from '../../data/dataSZ.json'
+import dataZH from '../../data/dataZH.json'
+import dataFS from '../../data/dataFS.json'
 // 序号对应index页面侧边栏顺序
 const mapping = {
 	1: dataGD,
 	2: dataST,
-	3: dataGZ
+	3: dataGZ,
+	4: dataSZ,
+	5: dataZH,
+	6: dataFS
 }
 export default {
 	props: {
@@ -75,9 +81,6 @@ export default {
 			this.keyword = e.detail
 		},
 		search() {
-			this.$nextTick(() => {
-				console.log(this.$refs, 'ref')
-			})
 			this.result = []
 			if (this.keyword === '') {
 				return

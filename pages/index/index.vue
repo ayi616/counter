@@ -27,6 +27,27 @@
 							<view style="font-size: 12px;text-align: left;">保护中心</view>
 						</template>
 					</van-sidebar-item>
+
+					<van-sidebar-item>
+						<template slot="title">
+							<view style="text-align: left;">深圳</view>
+							<view style="font-size: 12px;text-align: left;">保护中心</view>
+						</template>
+					</van-sidebar-item>
+
+					<van-sidebar-item>
+						<template slot="title">
+							<view style="text-align: left;">珠海</view>
+							<view style="font-size: 12px;text-align: left;">保护中心</view>
+						</template>
+					</van-sidebar-item>
+
+					<van-sidebar-item>
+						<template slot="title">
+							<view style="text-align: left;">佛山</view>
+							<view style="font-size: 12px;text-align: left;">保护中心</view>
+						</template>
+					</van-sidebar-item>
 				</van-sidebar>
 			</view>
 			<!-- 右侧内容区域 -->
@@ -35,6 +56,9 @@
 			<search v-show="activeKey === 1" :source="1" style="flex: 1"></search>
 			<search v-show="activeKey === 2" :source="2" style="flex: 1"></search>
 			<search v-show="activeKey === 3" :source="3" style="flex: 1"></search>
+			<search v-show="activeKey === 4" :source="4" style="flex: 1"></search>
+			<search v-show="activeKey === 5" :source="5" style="flex: 1"></search>
+			<search v-show="activeKey === 6" :source="6" style="flex: 1"></search>
 		</header>
 
 		<!-- 弹窗 -->
