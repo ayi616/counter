@@ -9,7 +9,7 @@ const quoteMap = {
 	},
 	quote2: {
 		title: '高质量发明',
-		time: '约18~30个月3年',
+		time: '约18~30个月',
 		refund: 15000,
 		remark: '不授权，退15000元，或重新申请'
 	},

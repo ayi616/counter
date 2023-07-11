@@ -1,17 +1,7 @@
 <template>
 	<view class="search-wrap" id="search-container">
 		<!-- 下拉菜单（有bug，暂未解决） -->
-		<!-- <van-dropdown-menu><van-dropdown-item v-model="value1" :options="option1" /></van-dropdown-menu> -->
-		<view class="">搜索范围：</view>
-		<van-radio-group v-model="radio" @change="changeRadio">
-			<van-cell-group>
-				<van-cell :title="item" clickable v-for="(item, index) in keyList" :key="index" @click="cellClick(item)" v-if="">
-					<template #right-icon>
-						<van-radio :name="item" />
-					</template>
-				</van-cell>
-			</van-cell-group>
-		</van-radio-group>
+		<van-dropdown-menu><van-dropdown-item v-model="selected" :options="options" custom-class="dropdown" @change="hangdleChange" /></van-dropdown-menu>
 
 		<van-field v-model="keyword" center clearable label="搜索词" placeholder="请输入搜索词" @change="keyChange">
 			<template #button>
@@ -23,7 +13,7 @@
 			<view class="table">
 				<view class="table-row" v-for="item in result" :key="item.key">
 					<view class="row-key">
-						<view class="">{{ item.key }}</view>
+						<view v-html="item.key"></view>
 						<van-tag color="#1f586b" size="medium">{{ item.tag }}</van-tag>
 					</view>
 					<view class="row-value">{{ item.desc }}</view>
@@ -41,6 +31,7 @@ import dataST from '../../data/dataST.json'
 import dataSZ from '../../data/dataSZ.json'
 import dataZH from '../../data/dataZH.json'
 import dataFS from '../../data/dataFS.json'
+import dataAll from '../../data/data.json'
 // 序号对应index页面侧边栏顺序
 const mapping = {
 	1: dataGD,
@@ -48,7 +39,8 @@ const mapping = {
 	3: dataGZ,
 	4: dataSZ,
 	5: dataZH,
-	6: dataFS
+	6: dataFS,
+	7: dataAll
 }
 export default {
 	props: {
@@ -59,23 +51,26 @@ export default {
 	},
 	data() {
 		return {
-			value1: 0,
-			option1: [{ text: '全部商品', value: 0 }, { text: '新款商品', value: 1 }, { text: '活动商品', value: 2 }],
-			radio: '全部',
+			options: [{ text: '全部', value: '全部' }],
+			selected: '全部',
 			keyword: '', // 搜索关键词
-			result: [],
-			keyList: ['全部']
+			result: []
 		}
 	},
 	created() {
-		this.keyList = [...this.keyList, ...Object.keys(mapping[this.source])]
+		const sourceArr = Object.keys(mapping[this.source])
+		if (sourceArr.length > 1) {
+			sourceArr.forEach((key) => {
+				this.options.push({
+					text: key,
+					value: key
+				})
+			})
+		}
 	},
 	methods: {
-		cellClick(value) {
-			this.radio = value
-		},
-		changeRadio(e) {
-			this.radio = e.detail
+		hangdleChange(e) {
+			this.selected = e.detail
 		},
 		keyChange(e) {
 			this.keyword = e.detail
@@ -85,13 +80,13 @@ export default {
 			if (this.keyword === '') {
 				return
 			}
-			if (this.radio === '全部') {
+			if (this.selected === '全部') {
 				Object.keys(mapping[this.source]).forEach((item) => {
 					const temp = this.handleResult(mapping[this.source], item, this.keyword)
 					this.result = [...this.result, ...temp]
 				})
 			} else {
-				this.result = this.handleResult(mapping[this.source], this.radio, this.keyword)
+				this.result = this.handleResult(mapping[this.source], this.selected, this.keyword)
 			}
 		},
 		handleResult(source, target, keyword) {
@@ -112,11 +107,16 @@ export default {
 }
 </script>
 <style lang="less">
+.dropdown {
+	left: unset !important;
+	width: calc(100% - 80px);
+}
 .search-wrap {
 	height: 100%;
+	width: 100%;
 }
 .scroll-area {
-	height: calc(100% - 205px);
+	height: calc(100% - 100px);
 }
 .table {
 	.table-row {
@@ -129,14 +129,18 @@ export default {
 			// background-color: gainsboro;
 		}
 		.row-key {
-			width: 60px;
+			width: 120px;
 			padding: 0 6px;
 			border-right: 1px solid gainsboro;
+			word-break: break-all;
 		}
 		.row-value {
-			width: calc(100% - 60px);
+			width: calc(100% - 120px);
 			padding: 0 6px;
 			text-align: left;
+		}
+		.fontColor {
+			color: red;
 		}
 	}
 }

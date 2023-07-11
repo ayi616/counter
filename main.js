@@ -6,7 +6,6 @@ import Vue from 'vue'
 // import share from './share.js'
 // Vue.mixin(share)
 
-
 Vue.config.productionTip = false
 App.mpType = 'app'
 

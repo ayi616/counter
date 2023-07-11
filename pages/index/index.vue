@@ -48,17 +48,26 @@
 							<view style="font-size: 12px;text-align: left;">保护中心</view>
 						</template>
 					</van-sidebar-item>
+
+					<van-sidebar-item>
+						<template slot="title">
+							<!-- <view style="text-align: left;">All</view> -->
+							<view style="font-size: 12px;text-align: left;">优先审查</view>
+						</template>
+					</van-sidebar-item>
+
+					<van-sidebar-item>
+						<template slot="title">
+							<view style="text-align: left;">证书</view>
+						</template>
+					</van-sidebar-item>
 				</van-sidebar>
 			</view>
 			<!-- 右侧内容区域 -->
 
 			<pick-area v-show="activeKey === 0" @pop="pop" style="flex: 1; height: 100%;"></pick-area>
-			<search v-show="activeKey === 1" :source="1" style="flex: 1"></search>
-			<search v-show="activeKey === 2" :source="2" style="flex: 1"></search>
-			<search v-show="activeKey === 3" :source="3" style="flex: 1"></search>
-			<search v-show="activeKey === 4" :source="4" style="flex: 1"></search>
-			<search v-show="activeKey === 5" :source="5" style="flex: 1"></search>
-			<search v-show="activeKey === 6" :source="6" style="flex: 1"></search>
+			<search v-for="n in 7" :key="n" :source="n + 1" v-show="activeKey === n + 1" style="flex: 1;"></search>
+			<scale v-show="activeKey === 8" style="flex: 1;"></scale>
 		</header>
 
 		<!-- 弹窗 -->
@@ -91,6 +100,7 @@ import Pop from '../../wxcomponents/pop/pop.vue'
 import PickArea from '../../wxcomponents/pickArea/pickArea.vue'
 import Overview from '../../wxcomponents/overview/overview.vue'
 import Search from '../../wxcomponents/search/search.vue'
+import Scale from '../../wxcomponents/scale/scale.vue'
 import clonedeep from 'lodash/cloneDeep'
 export default {
 	onShareAppMessage() {},
@@ -228,7 +238,8 @@ export default {
 		Pop,
 		PickArea,
 		Overview,
-		Search
+		Search,
+		Scale
 	}
 }
 </script>
@@ -258,6 +269,7 @@ view {
 		.nav {
 			height: 100%;
 			width: 80px;
+			overflow: auto;
 			background-color: #eee;
 		}
 	}

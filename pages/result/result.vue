@@ -8,9 +8,11 @@
 				<item-card ref="apperance" :data="apperanceData" @changed="changeCount" @delete="del"></item-card>
 			</scroll-view>
 			<view class="options">
-				<van-button type="danger" icon="delete" round @click="trigger"></van-button>
-				<van-dialog :show="show" :z-inde="99999" title="确认要删除所有选择吗" show-cancel-button @confirm="delAll" @close="trigger" />
-				<van-toast id="van-toast" />
+				<view>
+					<van-button type="danger" icon="delete" round @click="trigger"></van-button>
+					<van-dialog :show="show" :z-inde="99999" title="确认要删除所有选择吗" show-cancel-button @confirm="delAll" @close="trigger" />
+					<van-toast id="van-toast" />
+				</view>
 			</view>
 			<view class="footer">
 				<text>最大可退金额：{{ refund }}元</text>
@@ -33,7 +35,8 @@ export default {
 			show: false,
 			inventData: {},
 			utilityData: {},
-			apperanceData: {}
+			apperanceData: {},
+			showDoc: true
 		}
 	},
 	computed: {
@@ -61,7 +64,7 @@ export default {
 		}
 	},
 	onLoad(options) {
-		const sysInfo = uni.getSystemInfoSync()
+		const sysInfo = uni.getSystemInfoSync() // 获取系统信息
 		// console.log(sysInfo, 'sysInfo');
 		this.height = sysInfo.windowHeight
 		if (options.result) {
